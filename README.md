@@ -9,20 +9,50 @@ git server for Python3(on Flask).
 
 ## Usage
 
-### Start git server
+
+### Create repository
+
+With http request
+
+```
+curl http://localhost:5000/admin/repository?name=acme-api
+```
+
+or with shell
 
 ```sh
 mkdir repos
-git init --bare repos/aaa
-git init --bare repos/bbb
+git init --bare repos/acme-api
+```
+
+### Start git server
+
+```sh
 python app.py
 ```
 
 ### From git client
 
 ```
-git clone http://localhost:5000/aaa
-git clone http://localhost:5000/bbb
+git clone http://localhost:5000/acme-api
+```
+
+### Git push
+
+Configure your mail
+
+```
+export GIT_COMMITTER_NAME=acme_usr
+export GIT_COMMITTER_EMAIL=acme_usr@acme.com
+```
+
+and  push
+
+```
+git checkout -b main
+git add --all
+git commit --author="$GIT_COMMITTER_NAME <$GIT_COMMITTER_EMAIL>" -m "$1"
+git push origin main
 ```
 
 ## Thanks

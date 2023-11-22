@@ -11,6 +11,11 @@ import logging.config
 from flask import Flask, make_response, request, abort
 import subprocess
 
+# prepare logs folder
+logsFolderLocation = os.path.join(os.getcwd(), "logs")
+if not os.path.exists(logsFolderLocation):
+    os.makedirs(logsFolderLocation)
+
 app = Flask(__name__)
 logging.config.fileConfig('logging.ini')    # by logging config file.
 
@@ -33,6 +38,20 @@ def getRepositoryPath(projectName):
 def index():
     return 'git clone ' + request.url + '/repositoryname'
 
+@app.route('/admin/repository')
+def createRepository():
+    name = request.args.get('name')
+    reposFolderLocation = os.path.join(os.getcwd(), "repos")
+    isExist = os.path.exists(reposFolderLocation)
+    if not isExist:
+        os.makedirs(reposFolderLocation)
+        print("repos directory was created")    
+
+    if not name:
+      return 'name is required'
+    else:    
+      subprocess.Popen('git init --bare repos/'+name, shell=True)
+      return 'success'
 
 @app.route('/info/refs', defaults={'project_name': ''})
 @app.route('/<string:project_name>/info/refs')
